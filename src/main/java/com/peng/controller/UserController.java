@@ -4,6 +4,7 @@ import com.peng.config.ErrorCode;
 import com.peng.model.Response;
 import com.peng.model.User;
 import com.peng.request.LoginRequest;
+import com.peng.request.UserRequest;
 import com.peng.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -33,8 +34,8 @@ public class UserController {
     //post登录
 
     @RequestMapping(value = "/login",method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public Response login(@RequestBody LoginRequest request,HttpSession session){
-        //添加用户认证信息
+    public Response login(@RequestBody LoginRequest request){
+        //获取用户认证信息
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(
                 request.getUsername(), request.getPassword());
@@ -56,7 +57,7 @@ public class UserController {
 
     @RequestMapping(value = "/get",method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public Response userInfo(HttpServletRequest httpServletRequest){
-        //添加用户认证信息
+        //获取用户认证信息
         Subject subject = SecurityUtils.getSubject();
         if(subject==null){
             logger.error("用户未登录，请登录后再试");
@@ -67,6 +68,23 @@ public class UserController {
             user = userService.findUserByUsername(subject.getPrincipal().toString());
         } catch (Exception e){
             logger.error("获取用户信息出现异常",e);
+            return new Response(ErrorCode.USER_UNKNOWN_ERROR.getCode(),ErrorCode.USER_UNKNOWN_ERROR.getMsg());
+        }
+        return new Response(200,user);
+    }
+
+    @RequestMapping(value = "/register",method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public Response register(@RequestBody UserRequest request){
+        User user = new User();
+        user.setName(request.getName());
+        user.setPhone(request.getPhone());
+        user.setUsername(request.getUsername());
+        user.setPassword(request.getPassword());
+        user.setEmail(request.getPassword());
+        try {
+            userService.register(user);
+        } catch (Exception e){
+            logger.error("注册用户信息出现异常",e);
             return new Response(ErrorCode.USER_UNKNOWN_ERROR.getCode(),ErrorCode.USER_UNKNOWN_ERROR.getMsg());
         }
         return new Response(200,user);

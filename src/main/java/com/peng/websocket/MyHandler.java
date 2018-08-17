@@ -1,22 +1,14 @@
 package com.peng.websocket;
 
 
+import net.sf.json.JSONObject;
+import org.springframework.stereotype.Service;
+import org.springframework.web.socket.*;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import com.peng.config.ErrorCode;
-import com.peng.model.Response;
-import net.sf.json.JSONObject;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
-import org.springframework.stereotype.Service;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketHandler;
-import org.springframework.web.socket.WebSocketMessage;
-import org.springframework.web.socket.WebSocketSession;
 
 
 @Service
